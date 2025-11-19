@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to ZedZen Review Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6366F1 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tagline {
+            font-size: 16px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .welcome-message {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .welcome-message h2 {
+            font-size: 24px;
+            color: #374151;
+            margin-bottom: 12px;
+        }
+
+        .welcome-message p {
+            font-size: 16px;
+            color: #6B7280;
+            line-height: 1.6;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 24px;
+            background: #F9FAFB;
+            border-radius: 16px;
+            border: 1px solid #E5E7EB;
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .feature h3 {
+            font-size: 18px;
+            color: #374151;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .feature p {
+            font-size: 14px;
+            color: #6B7280;
+            line-height: 1.5;
+        }
+
+        .steps {
+            background: linear-gradient(145deg, #F0F4FF 0%, #E0E7FF 100%);
+            border: 2px solid #C7D2FE;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        .steps h3 {
+            font-size: 20px;
+            color: #374151;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .step:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-number {
+            background: #8B5CF6;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+
+        .step-content h4 {
+            font-size: 16px;
+            color: #374151;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .step-content p {
+            font-size: 14px;
+            color: #6B7280;
+            line-height: 1.5;
+        }
+
+        .cta {
+            text-align: center;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(139, 92, 246, 0.4);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 24px;
+            background: #FAFAFA;
+            border-top: 1px solid #E5E7EB;
+        }
+
+        .brand {
+            font-size: 12px;
+            color: #8B5CF6;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .zedzen-pattern {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 100px;
+            height: 100px;
+            opacity: 0.1;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 8px,
+                #8B5CF6 8px,
+                #8B5CF6 16px
+            );
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="zedzen-pattern"></div>
+        
+        <div class="header">
+            <div class="logo">⚡ ZedZen Review Assistant</div>
+            <div class="tagline">AI-Powered Review Response Generator</div>
+        </div>
+
+        <div class="content">
+            <div class="welcome-message">
+                <h2>Welcome to the Future of Review Management</h2>
+                <p>Transform your Google Business review responses with AI-powered assistance that maintains your brand voice while saving you time.</p>
+            </div>
+
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">🤖</div>
+                    <h3>AI-Powered Responses</h3>
+                    <p>Generate professional, contextual responses using OpenAI's advanced language models.</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Multiple Tone Options</h3>
+                    <p>Choose from professional, friendly, apologetic, or grateful tones to match your brand voice.</p>
+                </div>
+                
+                <div class="feature">
+                    <div class="feature-icon">⚡</div>
+                    <h3>One-Click Extraction</h3>
+                    <p>Automatically extract review text from Google Business profiles with a single click.</p>
+                </div>
+            </div>
+
+            <div class="steps">
+                <h3>Get Started in 3 Simple Steps</h3>
+                
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Get Your OpenAI API Key</h4>
+                        <p>Visit <a href="https://platform.openai.com/api-keys" target="_blank" style="color: #8B5CF6;">OpenAI Platform</a> to create your API key. You'll need this to generate AI responses.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Configure the Extension</h4>
+                        <p>Click the extension icon in your browser toolbar and enter your API key in the popup window.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Start Responding to Reviews</h4>
+                        <p>Navigate to any Google Business profile with reviews and use the floating panel to generate professional responses.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cta">
+                <a href="https://platform.openai.com/api-keys" target="_blank" class="btn">Get Your API Key</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="brand">POWERED BY ZEDZEN™</div>
+        </div>
+    </div>
+</body>
+</html>

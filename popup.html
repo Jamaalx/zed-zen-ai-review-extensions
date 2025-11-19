@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZedZen Review Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 320px;
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(145deg, #FFFFFF 0%, #F8F7FF 100%);
+            color: #374151;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .logo {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tagline {
+            font-size: 12px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: #F0F4FF;
+            border-radius: 8px;
+            border: 1px solid #C7D2FE;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-indicator.active {
+            background: #10B981;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.inactive {
+            background: #EF4444;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-text {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: inherit;
+            background: #FAFAFA;
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #8B5CF6;
+            background: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+
+        .form-group input[type="password"] {
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+            color: white;
+            box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn-secondary {
+            background: #F3F4F6;
+            color: #374151;
+            border: 1px solid #E5E7EB;
+        }
+
+        .btn-secondary:hover {
+            background: #E5E7EB;
+            border-color: #D1D5DB;
+        }
+
+        .help-text {
+            font-size: 11px;
+            color: #6B7280;
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 16px;
+            border-top: 1px solid #E5E7EB;
+            background: #FAFAFA;
+        }
+
+        .brand {
+            font-size: 10px;
+            color: #8B5CF6;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .notification {
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .notification.success {
+            background: #D1FAE5;
+            color: #065F46;
+            border: 1px solid #6EE7B7;
+        }
+
+        .notification.error {
+            background: #FEE2E2;
+            color: #991B1B;
+            border: 1px solid #F87171;
+        }
+
+        .instructions {
+            background: #FEF3C7;
+            border: 1px solid #FBBF24;
+            color: #92400E;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            line-height: 1.4;
+            margin-bottom: 16px;
+        }
+
+        .instructions strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">⚡ ZedZen Review Assistant</div>
+        <div class="tagline">AI-Powered Review Response Generator</div>
+    </div>
+
+    <div class="content">
+        <div class="status">
+            <div class="status-indicator" id="statusIndicator"></div>
+            <span class="status-text" id="statusText">Extension Status</span>
+        </div>
+
+        <div class="notification" id="notification"></div>
+
+        <div class="instructions">
+            <strong>How to use:</strong>
+            1. Enter your OpenAI API key below<br>
+            2. Visit a Google Business profile with reviews<br>
+            3. Use the floating panel to extract and respond to reviews
+        </div>
+
+        <div class="form-group">
+            <label for="apiKey">OpenAI API Key</label>
+            <input type="password" id="apiKey" placeholder="sk-...">
+            <div class="help-text">
+                Get your API key from <a href="https://platform.openai.com/api-keys" target="_blank" style="color: #8B5CF6;">OpenAI Platform</a>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="modelSelect">OpenAI Model</label>
+            <select id="modelSelect">
+                <option value="gpt-4">GPT-4 (Most Accurate)</option>
+                <option value="gpt-4-turbo">GPT-4 Turbo (Faster)</option>
+                <option value="gpt-3.5-turbo">GPT-3.5 Turbo (Economical)</option>
+            </select>
+            <div class="help-text">
+                GPT-4 provides the best quality responses but costs more per request
+            </div>
+        </div>
+
+        <button class="btn btn-primary" id="saveBtn">Save API Key</button>
+        <button class="btn btn-secondary" id="toggleBtn">Toggle Extension Panel</button>
+    </div>
+
+    <div class="footer">
+        <div class="brand">POWERED BY ZEDZEN™</div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
