@@ -312,6 +312,58 @@ select:focus {
   display: none !important;
 }
 
+/* Auth required message */
+.auth-required {
+  text-align: center;
+  padding: 30px 20px;
+  color: #6B7280;
+}
+
+.auth-required p {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.auth-required small {
+  font-size: 12px;
+  color: #9CA3AF;
+}
+
+/* Usage indicator */
+.usage-indicator {
+  background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
+  border: 1px solid #C7D2FE;
+  border-radius: 8px;
+  padding: 10px 14px;
+  text-align: center;
+}
+
+.usage-indicator #usage-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6366F1;
+}
+
+.usage-indicator.warning {
+  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+  border-color: #FBBF24;
+}
+
+.usage-indicator.warning #usage-text {
+  color: #92400E;
+}
+
+.usage-indicator.exhausted {
+  background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+  border-color: #F87171;
+}
+
+.usage-indicator.exhausted #usage-text {
+  color: #991B1B;
+}
+
 /* ZedZen Brand Element */
 .panel-header h3::after {
   content: 'by ZedZenâ„¢';

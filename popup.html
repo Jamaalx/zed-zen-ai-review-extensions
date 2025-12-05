@@ -13,7 +13,7 @@
         }
 
         body {
-            width: 320px;
+            width: 340px;
             font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(145deg, #FFFFFF 0%, #F8F7FF 100%);
             color: #374151;
@@ -63,6 +63,15 @@
             padding: 20px;
         }
 
+        /* View containers */
+        .view {
+            display: none;
+        }
+        .view.active {
+            display: block;
+        }
+
+        /* Status bar */
         .status {
             display: flex;
             align-items: center;
@@ -97,8 +106,84 @@
         .status-text {
             font-size: 13px;
             font-weight: 500;
+            flex: 1;
         }
 
+        /* Usage bar */
+        .usage-section {
+            background: #F9FAFB;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+
+        .usage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .usage-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .usage-count {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .usage-bar {
+            height: 6px;
+            background: #E5E7EB;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .usage-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .usage-fill.warning {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+        }
+
+        .usage-fill.danger {
+            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+        }
+
+        /* Plan badge */
+        .plan-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .plan-badge.free {
+            background: #E5E7EB;
+            color: #374151;
+        }
+
+        .plan-badge.starter {
+            background: #DBEAFE;
+            color: #1D4ED8;
+        }
+
+        .plan-badge.pro {
+            background: #F3E8FF;
+            color: #7C3AED;
+        }
+
+        /* Form elements */
         .form-group {
             margin-bottom: 16px;
         }
@@ -111,7 +196,7 @@
             margin-bottom: 6px;
         }
 
-        .form-group input {
+        .form-group input, .form-group select {
             width: 100%;
             padding: 10px 12px;
             border: 2px solid #E5E7EB;
@@ -122,18 +207,14 @@
             transition: all 0.2s ease;
         }
 
-        .form-group input:focus {
+        .form-group input:focus, .form-group select:focus {
             outline: none;
             border-color: #8B5CF6;
             background: #FFFFFF;
             box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
         }
 
-        .form-group input[type="password"] {
-            font-family: 'Courier New', monospace;
-            letter-spacing: 1px;
-        }
-
+        /* Buttons */
         .btn {
             width: 100%;
             padding: 12px;
@@ -158,6 +239,12 @@
             box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
         }
 
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .btn-secondary {
             background: #F3F4F6;
             color: #374151;
@@ -169,13 +256,157 @@
             border-color: #D1D5DB;
         }
 
-        .help-text {
-            font-size: 11px;
-            color: #6B7280;
-            margin-top: 6px;
-            line-height: 1.4;
+        .btn-upgrade {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
         }
 
+        .btn-upgrade:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 12px;
+            width: auto;
+        }
+
+        /* Tab switcher */
+        .tab-switch {
+            display: flex;
+            background: #F3F4F6;
+            border-radius: 8px;
+            padding: 4px;
+            margin-bottom: 16px;
+        }
+
+        .tab-switch button {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            background: transparent;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            color: #6B7280;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-switch button.active {
+            background: white;
+            color: #8B5CF6;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        /* Notifications */
+        .notification {
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .notification.success {
+            background: #D1FAE5;
+            color: #065F46;
+            border: 1px solid #6EE7B7;
+            display: block;
+        }
+
+        .notification.error {
+            background: #FEE2E2;
+            color: #991B1B;
+            border: 1px solid #F87171;
+            display: block;
+        }
+
+        /* User info */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #F9FAFB;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-email {
+            font-size: 13px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .user-plan {
+            font-size: 11px;
+            color: #6B7280;
+            margin-top: 2px;
+        }
+
+        /* Links */
+        .link {
+            color: #8B5CF6;
+            cursor: pointer;
+            font-size: 12px;
+            text-decoration: none;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-8 {
+            margin-top: 8px;
+        }
+
+        .mb-8 {
+            margin-bottom: 8px;
+        }
+
+        /* Loading spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Footer */
         .footer {
             text-align: center;
             padding: 16px;
@@ -190,91 +421,156 @@
             letter-spacing: 0.5px;
         }
 
-        .notification {
-            padding: 10px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 500;
-            margin-bottom: 16px;
-            display: none;
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 16px 0;
         }
 
-        .notification.success {
-            background: #D1FAE5;
-            color: #065F46;
-            border: 1px solid #6EE7B7;
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #E5E7EB;
         }
 
-        .notification.error {
-            background: #FEE2E2;
-            color: #991B1B;
-            border: 1px solid #F87171;
+        .divider span {
+            padding: 0 12px;
+            font-size: 11px;
+            color: #9CA3AF;
         }
 
-        .instructions {
-            background: #FEF3C7;
-            border: 1px solid #FBBF24;
-            color: #92400E;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            line-height: 1.4;
-            margin-bottom: 16px;
+        /* Quick actions */
+        .quick-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
         }
 
-        .instructions strong {
-            display: block;
-            margin-bottom: 4px;
+        .quick-actions .btn {
+            flex: 1;
+            margin-bottom: 0;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="logo">⚡ ZedZen Review Assistant</div>
+        <div class="logo">ZedZen Review Assistant</div>
         <div class="tagline">AI-Powered Review Response Generator</div>
     </div>
 
     <div class="content">
-        <div class="status">
-            <div class="status-indicator" id="statusIndicator"></div>
-            <span class="status-text" id="statusText">Extension Status</span>
-        </div>
+        <div id="notification" class="notification"></div>
 
-        <div class="notification" id="notification"></div>
-
-        <div class="instructions">
-            <strong>How to use:</strong>
-            1. Enter your OpenAI API key below<br>
-            2. Visit a Google Business profile with reviews<br>
-            3. Use the floating panel to extract and respond to reviews
-        </div>
-
-        <div class="form-group">
-            <label for="apiKey">OpenAI API Key</label>
-            <input type="password" id="apiKey" placeholder="sk-...">
-            <div class="help-text">
-                Get your API key from <a href="https://platform.openai.com/api-keys" target="_blank" style="color: #8B5CF6;">OpenAI Platform</a>
+        <!-- Loading View -->
+        <div id="loading-view" class="view active">
+            <div class="text-center" style="padding: 40px 0;">
+                <div class="loading-spinner" style="border-color: #8B5CF6; border-top-color: transparent; width: 32px; height: 32px;"></div>
+                <p style="margin-top: 12px; color: #6B7280; font-size: 13px;">Loading...</p>
             </div>
         </div>
 
-        <div class="form-group">
-            <label for="modelSelect">OpenAI Model</label>
-            <select id="modelSelect">
-                <option value="gpt-4">GPT-4 (Most Accurate)</option>
-                <option value="gpt-4-turbo">GPT-4 Turbo (Faster)</option>
-                <option value="gpt-3.5-turbo">GPT-3.5 Turbo (Economical)</option>
-            </select>
-            <div class="help-text">
-                GPT-4 provides the best quality responses but costs more per request
+        <!-- Auth View (Login/Register) -->
+        <div id="auth-view" class="view">
+            <div class="tab-switch">
+                <button id="login-tab" class="active">Login</button>
+                <button id="register-tab">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="Your password">
+                </div>
+                <button id="login-btn" class="btn btn-primary">Login</button>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-form" style="display: none;">
+                <div class="form-group">
+                    <label for="register-name">Name (optional)</label>
+                    <input type="text" id="register-name" placeholder="Your name">
+                </div>
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" placeholder="Minimum 6 characters">
+                </div>
+                <button id="register-btn" class="btn btn-primary">Create Account</button>
+            </div>
+
+            <div class="divider"><span>Free plan includes</span></div>
+            <div style="font-size: 12px; color: #6B7280; text-align: center;">
+                5 AI responses per day
             </div>
         </div>
 
-        <button class="btn btn-primary" id="saveBtn">Save API Key</button>
-        <button class="btn btn-secondary" id="toggleBtn">Toggle Extension Panel</button>
+        <!-- Dashboard View (Logged In) -->
+        <div id="dashboard-view" class="view">
+            <!-- User Info -->
+            <div class="user-info">
+                <div class="user-avatar" id="user-avatar">U</div>
+                <div class="user-details">
+                    <div class="user-email" id="user-email">user@example.com</div>
+                    <div class="user-plan">
+                        <span class="plan-badge free" id="plan-badge">FREE</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Usage Section -->
+            <div class="usage-section">
+                <div class="usage-header">
+                    <span class="usage-title">Today's Usage</span>
+                    <span class="usage-count" id="usage-count">0 / 5</span>
+                </div>
+                <div class="usage-bar">
+                    <div class="usage-fill" id="usage-fill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Status -->
+            <div class="status">
+                <div class="status-indicator" id="statusIndicator"></div>
+                <span class="status-text" id="statusText">Ready</span>
+            </div>
+
+            <!-- Model Selection -->
+            <div class="form-group">
+                <label for="modelSelect">AI Model</label>
+                <select id="modelSelect">
+                    <option value="gpt-4">GPT-4 (Best Quality)</option>
+                    <option value="gpt-4-turbo">GPT-4 Turbo (Faster)</option>
+                    <option value="gpt-3.5-turbo">GPT-3.5 Turbo (Economical)</option>
+                </select>
+            </div>
+
+            <!-- Quick Actions -->
+            <button id="toggle-btn" class="btn btn-primary">Toggle Extension Panel</button>
+
+            <div class="quick-actions">
+                <button id="upgrade-btn" class="btn btn-upgrade btn-small">Upgrade Plan</button>
+                <button id="manage-btn" class="btn btn-secondary btn-small">Manage</button>
+            </div>
+
+            <div class="text-center mt-8">
+                <span class="link" id="logout-btn">Logout</span>
+            </div>
+        </div>
     </div>
 
     <div class="footer">
-        <div class="brand">POWERED BY ZEDZEN™</div>
+        <div class="brand">POWERED BY ZEDZEN</div>
     </div>
 
     <script src="popup.js"></script>
