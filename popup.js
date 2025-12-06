@@ -242,7 +242,20 @@ class PopupManager {
   async openUpgrade() {
     try {
       // Determine which plan to offer based on current plan
-      const planId = this.user.plan === 'free' ? 'starter' : 'pro';
+      let planId;
+      switch (this.user.plan) {
+        case 'free':
+          planId = 'basic';
+          break;
+        case 'basic':
+          planId = 'premium';
+          break;
+        case 'premium':
+          planId = 'enterprise';
+          break;
+        default:
+          planId = 'basic';
+      }
 
       const response = await this.apiCall('/api/stripe/create-checkout-session', {
         method: 'POST',
@@ -335,12 +348,18 @@ class PopupManager {
 
       // Update upgrade button text
       const upgradeBtn = document.getElementById('upgrade-btn');
-      if (this.user.plan === 'pro') {
-        upgradeBtn.style.display = 'none';
-      } else if (this.user.plan === 'starter') {
-        upgradeBtn.textContent = 'Upgrade to Pro';
-      } else {
-        upgradeBtn.textContent = 'Upgrade Plan';
+      switch (this.user.plan) {
+        case 'enterprise':
+          upgradeBtn.style.display = 'none'; // Already on highest plan
+          break;
+        case 'premium':
+          upgradeBtn.textContent = 'Upgrade to Enterprise';
+          break;
+        case 'basic':
+          upgradeBtn.textContent = 'Upgrade to Premium';
+          break;
+        default:
+          upgradeBtn.textContent = 'Upgrade Plan';
       }
     }
   }

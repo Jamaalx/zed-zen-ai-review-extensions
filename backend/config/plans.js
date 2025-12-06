@@ -5,6 +5,7 @@ const PLANS = {
     name: 'Free',
     dailyLimit: 5,
     priceMonthly: 0,
+    currency: 'USD',
     stripePriceId: null,
     features: [
       '5 responses per day',
@@ -12,31 +13,49 @@ const PLANS = {
       'Basic tones'
     ]
   },
-  starter: {
-    id: 'starter',
-    name: 'Starter',
+  basic: {
+    id: 'basic',
+    name: 'Basic',
     dailyLimit: 25,
-    priceMonthly: 5.00, // EUR
-    stripePriceId: process.env.STRIPE_STARTER_PRICE_ID,
+    priceMonthly: 4.99,
+    currency: 'USD',
+    stripePriceId: process.env.STRIPE_BASIC_PRICE_ID,
     features: [
       '25 responses per day',
       'All languages supported',
       'All tones available',
-      'Priority support'
+      'Email support'
     ]
   },
-  pro: {
-    id: 'pro',
-    name: 'Pro',
+  premium: {
+    id: 'premium',
+    name: 'Premium',
     dailyLimit: 100,
-    priceMonthly: 9.90, // EUR
-    stripePriceId: process.env.STRIPE_PRO_PRICE_ID,
+    priceMonthly: 14.99,
+    currency: 'USD',
+    stripePriceId: process.env.STRIPE_PREMIUM_PRICE_ID,
     features: [
       '100 responses per day',
       'All languages supported',
       'All tones available',
       'Priority support',
-      'Custom prompts (coming soon)'
+      'Advanced analytics'
+    ]
+  },
+  enterprise: {
+    id: 'enterprise',
+    name: 'Enterprise',
+    dailyLimit: 500,
+    priceMonthly: 49.99,
+    currency: 'USD',
+    stripePriceId: process.env.STRIPE_ENTERPRISE_PRICE_ID,
+    features: [
+      '500 responses per day',
+      'All languages supported',
+      'All tones available',
+      '24/7 priority support',
+      'Custom integrations',
+      'Dedicated account manager'
     ]
   }
 };
