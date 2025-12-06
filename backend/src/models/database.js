@@ -14,64 +14,62 @@ const db = new Database(dbPath);
 // Enable WAL mode for better performance
 db.pragma('journal_mode = WAL');
 
-// Initialize database schema
-function initializeDatabase() {
-  // Users table
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      email TEXT UNIQUE NOT NULL,
-      password_hash TEXT NOT NULL,
-      name TEXT,
-      plan TEXT DEFAULT 'free',
-      stripe_customer_id TEXT UNIQUE,
-      stripe_subscription_id TEXT,
-      subscription_status TEXT DEFAULT 'none',
-      subscription_current_period_end INTEGER,
-      created_at INTEGER DEFAULT (strftime('%s', 'now')),
-      updated_at INTEGER DEFAULT (strftime('%s', 'now'))
-    )
-  `);
+// Initialize database schema FIRST before any queries
+// Users table
+db.exec(`
+  CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    name TEXT,
+    plan TEXT DEFAULT 'free',
+    stripe_customer_id TEXT UNIQUE,
+    stripe_subscription_id TEXT,
+    subscription_status TEXT DEFAULT 'none',
+    subscription_current_period_end INTEGER,
+    created_at INTEGER DEFAULT (strftime('%s', 'now')),
+    updated_at INTEGER DEFAULT (strftime('%s', 'now'))
+  )
+`);
 
-  // Daily usage tracking
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS daily_usage (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      user_id INTEGER NOT NULL,
-      date TEXT NOT NULL,
-      requests_count INTEGER DEFAULT 0,
-      tokens_used INTEGER DEFAULT 0,
-      FOREIGN KEY (user_id) REFERENCES users(id),
-      UNIQUE(user_id, date)
-    )
-  `);
+// Daily usage tracking
+db.exec(`
+  CREATE TABLE IF NOT EXISTS daily_usage (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    date TEXT NOT NULL,
+    requests_count INTEGER DEFAULT 0,
+    tokens_used INTEGER DEFAULT 0,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    UNIQUE(user_id, date)
+  )
+`);
 
-  // Request logs (for analytics)
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS request_logs (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      user_id INTEGER NOT NULL,
-      endpoint TEXT NOT NULL,
-      tokens_input INTEGER DEFAULT 0,
-      tokens_output INTEGER DEFAULT 0,
-      model TEXT,
-      created_at INTEGER DEFAULT (strftime('%s', 'now')),
-      FOREIGN KEY (user_id) REFERENCES users(id)
-    )
-  `);
+// Request logs (for analytics)
+db.exec(`
+  CREATE TABLE IF NOT EXISTS request_logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    endpoint TEXT NOT NULL,
+    tokens_input INTEGER DEFAULT 0,
+    tokens_output INTEGER DEFAULT 0,
+    model TEXT,
+    created_at INTEGER DEFAULT (strftime('%s', 'now')),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+  )
+`);
 
-  // Create indexes for performance
-  db.exec(`
-    CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
-    CREATE INDEX IF NOT EXISTS idx_users_stripe_customer ON users(stripe_customer_id);
-    CREATE INDEX IF NOT EXISTS idx_daily_usage_user_date ON daily_usage(user_id, date);
-    CREATE INDEX IF NOT EXISTS idx_request_logs_user ON request_logs(user_id);
-  `);
+// Create indexes for performance
+db.exec(`
+  CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+  CREATE INDEX IF NOT EXISTS idx_users_stripe_customer ON users(stripe_customer_id);
+  CREATE INDEX IF NOT EXISTS idx_daily_usage_user_date ON daily_usage(user_id, date);
+  CREATE INDEX IF NOT EXISTS idx_request_logs_user ON request_logs(user_id);
+`);
 
-  console.log('Database initialized successfully');
-}
+console.log('Database initialized successfully');
 
-// User operations
+// NOW define prepared statements (after tables exist)
 const userQueries = {
   create: db.prepare(`
     INSERT INTO users (email, password_hash, name)
@@ -176,9 +174,6 @@ function incrementUsage(userId, tokensUsed = 0) {
 function logRequest(userId, endpoint, tokensInput, tokensOutput, model) {
   return usageQueries.logRequest.run(userId, endpoint, tokensInput, tokensOutput, model);
 }
-
-// Initialize on load
-initializeDatabase();
 
 module.exports = {
   db,
