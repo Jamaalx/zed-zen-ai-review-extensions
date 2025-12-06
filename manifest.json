@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Review Response Assistant",
-  "version": "1.0",
-  "description": "AI-powered assistant for generating professional responses to Google reviews",
+  "name": "ZedZen Review Assistant",
+  "version": "2.0.0",
+  "description": "AI-powered assistant for generating professional responses to Google reviews. Create an account and get 5 free responses per day!",
   "permissions": [
     "activeTab",
     "storage",
@@ -10,7 +10,7 @@
   ],
   "host_permissions": [
     "https://www.google.com/*",
-    "https://api.openai.com/*"
+    "https://*.railway.app/*"
   ],
   "content_scripts": [
     {
@@ -24,7 +24,7 @@
   },
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Review Response Assistant"
+    "default_title": "ZedZen Review Assistant"
   },
   "icons": {
     "16": "icons/icon16.png",
