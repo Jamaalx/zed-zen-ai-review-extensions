@@ -4,43 +4,19 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
-const authRoutes = require('./routes/auth');
-const aiRoutes = require('./routes/ai');
-const stripeRoutes = require('./routes/stripe');
-const userRoutes = require('./routes/user');
-
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Health check endpoint FIRST (before any middleware that might fail)
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
 
 // Security middleware
 app.use(helmet());
 
-// CORS - allow extension and dashboard
-const allowedOrigins = [
-  process.env.FRONTEND_URL,
-  process.env.DASHBOARD_URL,
-  'chrome-extension://*'
-].filter(Boolean);
-
-app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or Postman)
-    if (!origin) return callback(null, true);
-
-    // Allow chrome extensions
-    if (origin.startsWith('chrome-extension://')) {
-      return callback(null, true);
-    }
-
-    // Check allowed origins
-    if (allowedOrigins.some(allowed => origin === allowed || allowed === '*')) {
-      return callback(null, true);
-    }
-
-    callback(new Error('Not allowed by CORS'));
-  },
-  credentials: true
-}));
+// CORS - allow all for now (can restrict later)
+app.use(cors());
 
 // Stripe webhook needs raw body - must be before express.json()
 app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }));
@@ -56,16 +32,22 @@ const globalLimiter = rateLimit({
 });
 app.use(globalLimiter);
 
-// Health check endpoint (useful for Railway)
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
+// Load routes with error handling
+try {
+  const authRoutes = require('./routes/auth');
+  const aiRoutes = require('./routes/ai');
+  const stripeRoutes = require('./routes/stripe');
+  const userRoutes = require('./routes/user');
 
-// API Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/ai', aiRoutes);
-app.use('/api/stripe', stripeRoutes);
-app.use('/api/user', userRoutes);
+  app.use('/api/auth', authRoutes);
+  app.use('/api/ai', aiRoutes);
+  app.use('/api/stripe', stripeRoutes);
+  app.use('/api/user', userRoutes);
+
+  console.log('All routes loaded successfully');
+} catch (error) {
+  console.error('Error loading routes:', error);
+}
 
 // 404 handler
 app.use((req, res) => {
@@ -78,8 +60,8 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-// Start server
-app.listen(PORT, () => {
+// Start server - listen on 0.0.0.0 for Railway
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`ZedZen API Server running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });
