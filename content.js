@@ -1,7 +1,7 @@
 // content.js - Main content script for the Chrome extension (SaaS version)
 
 // API Configuration - Must match popup.js
-const API_BASE_URL = 'https://your-app.railway.app'; // TODO: Update with your Railway URL
+const API_BASE_URL = 'https://zed-zen-ai-review-extensions-production.up.railway.app';
 
 class ReviewAssistant {
   constructor() {

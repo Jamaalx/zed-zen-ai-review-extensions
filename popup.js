@@ -1,7 +1,7 @@
 // popup.js - Extension popup with authentication
 
 // API Configuration - Change this to your Railway URL after deployment
-const API_BASE_URL = 'https://your-app.railway.app'; // TODO: Update with your Railway URL
+const API_BASE_URL = 'https://zed-zen-ai-review-extensions-production.up.railway.app';
 
 class PopupManager {
   constructor() {
