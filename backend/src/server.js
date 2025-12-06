@@ -7,6 +7,9 @@ const rateLimit = require('express-rate-limit');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Trust proxy - required for Railway (reverse proxy) and rate limiting
+app.set('trust proxy', 1);
+
 // Health check endpoint FIRST (before any middleware that might fail)
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
