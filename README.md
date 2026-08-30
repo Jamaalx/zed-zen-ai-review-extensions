@@ -1,5 +1,8 @@
 # ZedZen Review Assistant
 
+[![CI](https://github.com/Jamaalx/zed-zen-ai-review-extensions/actions/workflows/ci.yml/badge.svg)](https://github.com/Jamaalx/zed-zen-ai-review-extensions/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 A Chrome browser extension that helps businesses quickly generate professional, AI-powered responses to customer reviews on Google Business profiles using OpenAI's language models.
 
 ## Overview
@@ -11,7 +14,7 @@ ZedZen Review Assistant streamlines the review response process by automatically
 ### Response Customization
 - **Multiple Languages**: English, Romanian, Spanish, French, German, Italian
 - **Tone Options**: Professional, Friendly, Apologetic, Grateful
-- **AI Models**: Support for GPT-3.5 Turbo, GPT-4, and GPT-4 Turbo
+- **AI Models**: GPT-5.6 Sol / Terra / Luna and GPT-4o mini (GPT-4, GPT-4 Turbo and GPT-3.5 Turbo were retired by OpenAI on 23 Oct 2026; saved settings are migrated automatically)
 
 ### User Interface
 - Floating draggable panel that overlays on Google pages
@@ -39,7 +42,7 @@ ZedZen Review Assistant streamlines the review response process by automatically
 
 1. Click on the extension icon in your toolbar
 2. Enter your OpenAI API key (obtain one from [platform.openai.com](https://platform.openai.com))
-3. Select your preferred GPT model
+3. Select your preferred model (default: GPT-5.6 Terra)
 4. Save your settings
 
 ## Usage
@@ -104,7 +107,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-This project is open source. Please check the repository for license details.
+MIT — see [LICENSE](LICENSE).
 
 ---
 

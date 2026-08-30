@@ -1,3 +1,11 @@
+// Models retired by OpenAI (shutdown 2026-10-23) are mapped to their successors.
+const DEFAULT_MODEL = 'gpt-5.6-terra';
+const RETIRED_MODELS = { 'gpt-4': 'gpt-5.6-sol', 'gpt-4-turbo': 'gpt-5.6-sol', 'gpt-3.5-turbo': 'gpt-5.6-terra' };
+function normalizeModel(model) {
+  if (!model) return DEFAULT_MODEL;
+  return RETIRED_MODELS[model] || model;
+}
+
 // content.js - Main content script for the Chrome extension
 
 class ReviewAssistant {
@@ -11,7 +19,7 @@ class ReviewAssistant {
     // Get stored API key and model
     const result = await chrome.storage.sync.get(['openaiApiKey', 'openaiModel']);
     this.apiKey = result.openaiApiKey;
-    this.model = result.openaiModel || 'gpt-4';
+    this.model = normalizeModel(result.openaiModel);
     
     // Create the floating assistant panel
     this.createAssistantPanel();
@@ -25,7 +33,7 @@ class ReviewAssistant {
         this.toggleExtension();
       } else if (request.action === 'updateApiKey') {
         this.apiKey = request.apiKey;
-        this.model = request.model || 'gpt-4';
+        this.model = normalizeModel(request.model);
       }
     });
   }
@@ -231,36 +239,50 @@ class ReviewAssistant {
 
   async callOpenAI(reviewText, tone, language) {
     const prompt = this.buildPrompt(reviewText, tone, language);
-    
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const model = normalizeModel(this.model);
+
+    // Responses API: works uniformly for GPT-5.6 (reasoning) and GPT-4o models.
+    // Chat Completions rejects `max_tokens`/`temperature` on reasoning models.
+    const body = {
+      model,
+      instructions: 'You are a professional customer service assistant helping businesses respond to reviews. Generate helpful, appropriate responses in the requested language.',
+      input: prompt,
+      max_output_tokens: 600
+    };
+    if (model.startsWith('gpt-5')) {
+      body.reasoning = { effort: 'low' };
+    }
+
+    const response = await fetch('https://api.openai.com/v1/responses', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${this.apiKey}`
       },
-      body: JSON.stringify({
-        model: this.model || 'gpt-4',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are a professional customer service assistant helping businesses respond to reviews. Generate helpful, appropriate responses in the requested language.'
-          },
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-        max_tokens: 200,
-        temperature: 0.7
-      })
+      body: JSON.stringify(body)
     });
 
     if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status}`);
+      let detail = '';
+      try {
+        const err = await response.json();
+        detail = err?.error?.message ? `: ${err.error.message}` : '';
+      } catch (_) { /* non-JSON error body */ }
+      throw new Error(`OpenAI API error ${response.status}${detail}`);
     }
 
     const data = await response.json();
-    return data.choices[0].message.content;
+    const text = (data.output || [])
+      .filter((item) => item.type === 'message')
+      .flatMap((item) => item.content || [])
+      .filter((part) => part.type === 'output_text')
+      .map((part) => part.text)
+      .join('')
+      .trim();
+    if (!text) {
+      throw new Error('OpenAI returned an empty response');
+    }
+    return text;
   }
 
   buildPrompt(reviewText, tone, language) {

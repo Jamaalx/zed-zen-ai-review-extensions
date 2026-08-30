@@ -39,8 +39,13 @@ class PopupManager {
         const maskedKey = this.maskApiKey(result.openaiApiKey);
         document.getElementById('apiKey').placeholder = maskedKey;
       }
+      const RETIRED_MODELS = { 'gpt-4': 'gpt-5.6-sol', 'gpt-4-turbo': 'gpt-5.6-sol', 'gpt-3.5-turbo': 'gpt-5.6-terra' };
       if (result.openaiModel) {
-        document.getElementById('modelSelect').value = result.openaiModel;
+        const model = RETIRED_MODELS[result.openaiModel] || result.openaiModel;
+        const select = document.getElementById('modelSelect');
+        select.value = model;
+        if (select.value !== model) select.value = 'gpt-5.6-terra'; // unknown id → default
+        if (model !== result.openaiModel) await chrome.storage.sync.set({ openaiModel: select.value });
       }
     } catch (error) {
       console.error('Error loading settings:', error);

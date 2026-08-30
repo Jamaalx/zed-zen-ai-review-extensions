@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Review Response Assistant",
-  "version": "1.0",
+  "version": "1.1",
   "description": "AI-powered assistant for generating professional responses to Google reviews",
   "permissions": [
     "activeTab",
