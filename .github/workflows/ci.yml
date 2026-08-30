@@ -20,7 +20,7 @@ jobs:
         run: for f in *.js; do node --check "$f"; done
       - name: Package zip artifact
         run: zip -r review-assistant.zip manifest.json *.js *.html *.css icons
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: extension-zip
           path: review-assistant.zip
