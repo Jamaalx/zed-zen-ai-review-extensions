@@ -1,6 +1,11 @@
 version: 2
 updates:
+  # No npm manifest in this repo (plain JS extension, no dependencies).
+  # Add a `package-ecosystem: npm` entry here if a package.json is introduced.
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: weekly
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]
