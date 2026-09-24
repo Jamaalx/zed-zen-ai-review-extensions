@@ -77,7 +77,6 @@ class PopupManager {
       if (tabs[0]) {
         chrome.tabs.sendMessage(tabs[0].id, {
           action: 'updateApiKey',
-          apiKey: apiKey,
           model: selectedModel
         }).catch(() => {
           // Content script might not be loaded, that's okay

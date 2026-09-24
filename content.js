@@ -10,7 +10,7 @@ function normalizeModel(model) {
 
 class ReviewAssistant {
   constructor() {
-    this.apiKey = null;
+    this.hasApiKey = false;
     this.isExtensionActive = false;
     this.init();
   }
@@ -18,7 +18,7 @@ class ReviewAssistant {
   async init() {
     // Get stored API key and model
     const result = await chrome.storage.sync.get(['openaiApiKey', 'openaiModel']);
-    this.apiKey = result.openaiApiKey;
+    this.hasApiKey = Boolean(result.openaiApiKey);
     this.model = normalizeModel(result.openaiModel);
     
     // Create the floating assistant panel
@@ -32,7 +32,7 @@ class ReviewAssistant {
       if (request.action === 'toggleExtension') {
         this.toggleExtension();
       } else if (request.action === 'updateApiKey') {
-        this.apiKey = request.apiKey;
+        this.hasApiKey = true;
         this.model = normalizeModel(request.model);
       }
     });
@@ -219,7 +219,7 @@ class ReviewAssistant {
       return;
     }
     
-    if (!this.apiKey) {
+    if (!this.hasApiKey) {
       this.showMessage('Please set your OpenAI API key in the extension popup.', 'error');
       return;
     }
@@ -253,36 +253,12 @@ class ReviewAssistant {
       body.reasoning = { effort: 'low' };
     }
 
-    const response = await fetch('https://api.openai.com/v1/responses', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`
-      },
-      body: JSON.stringify(body)
-    });
-
-    if (!response.ok) {
-      let detail = '';
-      try {
-        const err = await response.json();
-        detail = err?.error?.message ? `: ${err.error.message}` : '';
-      } catch (_) { /* non-JSON error body */ }
-      throw new Error(`OpenAI API error ${response.status}${detail}`);
+    // The request is made by the background service worker, which holds the API key.
+    const result = await chrome.runtime.sendMessage({ action: 'generateResponse', body });
+    if (!result || !result.ok) {
+      throw new Error(result?.error || 'No response from the extension background worker');
     }
-
-    const data = await response.json();
-    const text = (data.output || [])
-      .filter((item) => item.type === 'message')
-      .flatMap((item) => item.content || [])
-      .filter((part) => part.type === 'output_text')
-      .map((part) => part.text)
-      .join('')
-      .trim();
-    if (!text) {
-      throw new Error('OpenAI returned an empty response');
-    }
-    return text;
+    return result.text;
   }
 
   buildPrompt(reviewText, tone, language) {
