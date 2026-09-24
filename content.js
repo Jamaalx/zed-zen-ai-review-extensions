@@ -53,7 +53,7 @@ class ReviewAssistant {
     panel.innerHTML = `
       <div class="panel-header">
         <h3>Review Assistant</h3>
-        <button id="toggle-panel" class="toggle-btn">âˆ’</button>
+        <button id="toggle-panel" class="toggle-btn">−</button>
       </div>
       <div class="panel-content">
         <div class="review-section">
@@ -80,8 +80,8 @@ class ReviewAssistant {
           <select id="response-language">
             <option value="en">English</option>
             <option value="ro">Română (Romanian)</option>
-            <option value="es">Espanol (Spanish)</option>
-            <option value="fr">Francais (French)</option>
+            <option value="es">Español (Spanish)</option>
+            <option value="fr">Français (French)</option>
             <option value="de">Deutsch (German)</option>
             <option value="it">Italiano (Italian)</option>
           </select>
@@ -116,7 +116,7 @@ class ReviewAssistant {
       
       if (content.style.display === 'none') {
         content.style.display = 'block';
-        toggleBtn.textContent = 'âˆ’';
+        toggleBtn.textContent = '−';
       } else {
         content.style.display = 'none';
         toggleBtn.textContent = '+';
@@ -288,9 +288,9 @@ class ReviewAssistant {
   buildPrompt(reviewText, tone, language) {
     const languageNames = {
       'en': 'English',
-      'ro': 'Romanian (RomÃ¢nÄƒ)', 
-      'es': 'Spanish (EspaÃ±ol)',
-      'fr': 'French (FranÃ§ais)',
+      'ro': 'Romanian (Română)', 
+      'es': 'Spanish (Español)',
+      'fr': 'French (Français)',
       'de': 'German (Deutsch)',
       'it': 'Italian (Italiano)'
     };
