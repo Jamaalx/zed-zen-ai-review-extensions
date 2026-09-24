@@ -14,7 +14,7 @@ ZedZen Review Assistant streamlines the review response process by automatically
 ### Response Customization
 - **Multiple Languages**: English, Romanian, Spanish, French, German, Italian
 - **Tone Options**: Professional, Friendly, Apologetic, Grateful
-- **AI Models**: GPT-5.6 Sol / Terra / Luna and GPT-4o mini (GPT-4, GPT-4 Turbo and GPT-3.5 Turbo were retired by OpenAI on 23 Oct 2026; saved settings are migrated automatically)
+- **AI Models**: GPT-5.6 Sol / Terra / Luna and GPT-4o mini (GPT-4, GPT-4 Turbo and GPT-3.5 Turbo are shut down by OpenAI on 23 Oct 2026; saved settings are migrated automatically)
 
 ### User Interface
 - Floating draggable panel that overlays on Google pages
@@ -56,17 +56,17 @@ ZedZen Review Assistant streamlines the review response process by automatically
 
 ## API Key Storage
 
-**Important Security Information**: Your OpenAI API key is securely stored using **Chrome's Storage API** (specifically `chrome.storage.sync`), which is part of the Chromium browser's built-in storage system.
+Your OpenAI API key is stored with **Chrome's Storage API** (`chrome.storage.sync`).
 
 ### How it works:
-- The API key is stored in Chromium's encrypted sync storage
-- The key syncs across your Chrome browsers when signed in to your Google account
+- The key is kept in the browser profile's extension storage. It is **not** encrypted at rest by the extension, so anyone with access to your Chrome profile can read it — use a project-scoped key with a spending limit.
+- The key syncs across your Chrome browsers when you are signed in to your Google account (encrypted in transit by Chrome Sync)
 - The key is masked in the UI (showing only the first 7 and last 4 characters)
-- No sensitive data is stored in local files or localStorage
+- Requests to OpenAI are made by the extension's background service worker; the key is never passed to the Google page or its content script
 
 ### Security measures:
 - API key format validation (must start with "sk-")
-- HTTPS-only communication with OpenAI API
+- HTTPS-only communication with OpenAI API, restricted by the extension's Content Security Policy
 - No external servers - direct communication with OpenAI
 
 ## Project Structure
@@ -74,8 +74,8 @@ ZedZen Review Assistant streamlines the review response process by automatically
 ```
 zed-zen-ai-review-extensions/
 ├── manifest.json          # Extension configuration (Manifest V3)
-├── background.js          # Service worker for extension lifecycle
-├── content.js             # Main logic for review extraction & response generation
+├── background.js          # Service worker: badge, OpenAI API calls
+├── content.js             # Floating panel, review extraction, prompt building
 ├── popup.js               # Popup interface controller
 ├── popup.html             # Settings UI
 ├── welcome.html           # Onboarding page shown after installation
@@ -91,15 +91,15 @@ zed-zen-ai-review-extensions/
 
 - **JavaScript** (Vanilla ES6+)
 - **Chrome Extension API** (Manifest V3)
-- **OpenAI API** (Chat Completions)
+- **OpenAI API** (Responses API, `/v1/responses`)
 - **HTML5 / CSS3** with modern design patterns
 
 ## Permissions
 
 The extension requires the following permissions:
-- `activeTab` - Access the current tab to inject the review panel
-- `storage` - Store API key and settings securely
-- `scripting` - Inject content scripts into Google pages
+- `storage` - Store the API key and settings
+- Host access to `https://www.google.com/*` - Show the review panel on Google pages
+- Host access to `https://api.openai.com/*` - Send generation requests to OpenAI
 
 ## Contributing
 
