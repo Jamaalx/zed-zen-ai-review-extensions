@@ -45,7 +45,7 @@ class PopupManager {
         const select = document.getElementById('modelSelect');
         select.value = model;
         if (select.value !== model) select.value = 'gpt-5.6-terra'; // unknown id → default
-        if (model !== result.openaiModel) await chrome.storage.sync.set({ openaiModel: select.value });
+        if (select.value !== result.openaiModel) await chrome.storage.sync.set({ openaiModel: select.value });
       }
     } catch (error) {
       console.error('Error loading settings:', error);
@@ -56,21 +56,23 @@ class PopupManager {
     const apiKey = document.getElementById('apiKey').value.trim();
     const selectedModel = document.getElementById('modelSelect').value;
     
-    if (!apiKey) {
+    const { openaiApiKey: storedKey } = await chrome.storage.sync.get(['openaiApiKey']);
+
+    if (!apiKey && !storedKey) {
       this.showNotification('Please enter an API key', 'error');
       return;
     }
 
-    if (!apiKey.startsWith('sk-')) {
+    if (apiKey && !apiKey.startsWith('sk-')) {
       this.showNotification('Invalid API key format. Key should start with "sk-"', 'error');
       return;
     }
 
     try {
-      await chrome.storage.sync.set({ 
-        openaiApiKey: apiKey,
-        openaiModel: selectedModel
-      });
+      // An empty key field keeps the saved key, so the model can be changed alone.
+      const settings = { openaiModel: selectedModel };
+      if (apiKey) settings.openaiApiKey = apiKey;
+      await chrome.storage.sync.set(settings);
       
       // Send message to content script
       const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -86,7 +88,7 @@ class PopupManager {
       this.showNotification(`Settings saved! Using ${selectedModel}`, 'success');
       
       // Clear input and update placeholder
-      const maskedKey = this.maskApiKey(apiKey);
+      const maskedKey = this.maskApiKey(apiKey || storedKey);
       document.getElementById('apiKey').value = '';
       document.getElementById('apiKey').placeholder = maskedKey;
       

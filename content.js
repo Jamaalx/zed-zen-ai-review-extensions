@@ -36,6 +36,13 @@ class ReviewAssistant {
         this.model = normalizeModel(request.model);
       }
     });
+
+    // Keep every open Google tab in sync with settings changed in the popup.
+    chrome.storage.onChanged.addListener((changes, area) => {
+      if (area !== 'sync') return;
+      if (changes.openaiApiKey) this.hasApiKey = Boolean(changes.openaiApiKey.newValue);
+      if (changes.openaiModel) this.model = normalizeModel(changes.openaiModel.newValue);
+    });
   }
 
   createAssistantPanel() {
