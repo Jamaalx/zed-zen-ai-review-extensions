@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.0 — 2026-11-01
+- The assistant panel no longer appears on every google.com page (search results included). It shows up on its own only where there are reviews, including reviews that load later or after in-page navigation, and can always be opened or closed from the extension popup; once you toggle it, it stays the way you chose.
+- Review detection also recognises `[data-review-id]` elements; the selector list is shared by detection and click-to-extract.
+
 ## 1.1.1 — 2026-09-24
 - Security: OpenAI requests are made from the background service worker; the API key is no longer handed to the Google page's content script.
 - Permissions reduced to `storage` (removed unused `activeTab` and `scripting`); explicit Content Security Policy for extension pages.

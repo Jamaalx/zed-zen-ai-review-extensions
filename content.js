@@ -8,10 +8,21 @@ function normalizeModel(model) {
 
 // content.js - Main content script for the Chrome extension
 
+// Elements that hold review text on Google pages (search local panel, Maps).
+const REVIEW_SELECTORS = [
+  '.review-text',
+  '[data-review-text]',
+  '[data-review-id]',
+  '.MyEned span',
+  '.ODSEW-ShBeI-text'
+];
+
 class ReviewAssistant {
   constructor() {
     this.hasApiKey = false;
     this.isExtensionActive = false;
+    // Once the user opens or closes the panel from the popup, stop showing it automatically.
+    this.userToggled = false;
     this.init();
   }
 
@@ -111,8 +122,32 @@ class ReviewAssistant {
       </div>
     `;
     
+    // The content script runs on every google.com page; only show the panel
+    // where there are reviews to answer (or when opened from the popup).
+    panel.style.display = this.pageHasReviews() ? 'block' : 'none';
     document.body.appendChild(panel);
     this.setupPanelEvents();
+    this.watchForReviews(panel);
+  }
+
+  pageHasReviews() {
+    return REVIEW_SELECTORS.some((selector) => document.querySelector(selector));
+  }
+
+  // Reviews load after the page (and on in-page navigation): show the panel
+  // when they appear, unless the user already chose to hide or show it.
+  watchForReviews(panel) {
+    let pending = false;
+    const observer = new MutationObserver(() => {
+      if (pending) return;
+      pending = true;
+      setTimeout(() => {
+        pending = false;
+        if (this.userToggled || panel.style.display !== 'none') return;
+        if (this.pageHasReviews()) panel.style.display = 'block';
+      }, 500);
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
   }
 
   setupPanelEvents() {
@@ -388,6 +423,7 @@ Write only the response text, nothing else:`;
   toggleExtension() {
     const panel = document.getElementById('review-assistant-panel');
     if (panel) {
+      this.userToggled = true;
       panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
     }
   }
@@ -396,14 +432,7 @@ Write only the response text, nothing else:`;
     // Listen for clicks on review elements to auto-extract
     document.addEventListener('click', (e) => {
       // Auto-extract when clicking on review text elements
-      const reviewSelectors = [
-        '.review-text',
-        '[data-review-text]',
-        '.MyEned span',
-        '.ODSEW-ShBeI-text'
-      ];
-      
-      for (const selector of reviewSelectors) {
+      for (const selector of REVIEW_SELECTORS) {
         if (e.target.matches(selector) || e.target.closest(selector)) {
           setTimeout(() => this.extractReviewFromPage(), 100);
           break;
